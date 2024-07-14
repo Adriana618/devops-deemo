@@ -17,7 +17,7 @@ jobs:
       - name: Build, tag, and push image to Docker Hub
         run: |
           docker build . --file docker-conf/Dockerfile-django-api --tag ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
-          docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:latest
+          docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
 
   deploy:
     needs: [build]
