@@ -16,11 +16,11 @@ spec:
       - name: algova-django-api
         image: algova/algova-django-api:latest
         imagePullPolicy: Always
-        command: ['gunicorn', 'config.wsgi', '--bind=0.0.0.0:8000']
+        command: ['gunicorn', 'demo.wsgi', '--bind=0.0.0.0:8000']
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "250m"
+            memory: "128Mi"
+            cpu: "50m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "125m"
