@@ -1,0 +1,26 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: algova-django-api
+spec:
+  selector:
+    matchLabels:
+      app: algova-django-api
+  template:
+    metadata:
+      labels:
+        app: algova-django-api
+    spec:
+      containers:
+      - name: algova-django-api
+        image: algova/algova-django-api:latest
+        imagePullPolicy: Always
+        command: ['gunicorn', 'config.wsgi', '--bind=0.0.0.0:8000']
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

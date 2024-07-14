@@ -1,0 +1,48 @@
+name: Deploy API
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build-main-api
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build, tag, and push image to Docker Hub
+        run: |
+          docker build .. --file docker-conf/Dockerfile-django-api --tag ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
+          docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:latest
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    name: deploy-main-api
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run: |
+          kubectl apply -f kubernetes/api-deployment.yaml --namespace=default
+          kubectl set image deployment/algova-django-api algova-django-api=${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7} --namespace=default
+          kubectl rollout status deployment/algova-django-api --namespace=default
+          kubectl wait --for=condition=available --timeout=300s --namespace=default deployment/algova-django-api
+          kubectl get pods -l app=algova-django-api --namespace=default
+          sleep 10 # Wait for previous pod to terminate
+          kubectl exec --namespace=default \
+          $(kubectl get pod -l app=algova-django-api --field-selector=status.phase==Running -o jsonpath="{.items[0].metadata.name}" --namespace=default) \
+          -- python manage.py makemigrations
+          kubectl exec --namespace=default \
+          $(kubectl get pod -l app=algova-django-api --field-selector=status.phase==Running -o jsonpath="{.items[0].metadata.name}" --namespace=default) \
+          -- python manage.py migrate
