@@ -35,16 +35,20 @@ jobs:
       - name: Configure access to Kubernetes cluster
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
 
-      - name: Base64 encode secrets
-        id: encode_secrets
+      - name: Install Helm
         run: |
-          echo "::set-output name=secret_key::$(echo -n ${{ secrets.DJANGO_SECRET_KEY }} | base64)"
-          echo "::set-output name=allowed_hosts::$(echo -n ${{ secrets.DJANGO_ALLOWED_HOSTS }} | base64)"
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
-          kubectl apply -f kubernetes/api-services.yaml --namespace=default
-          kubectl apply -f kubernetes/api-deployment.yaml --namespace=default
+          helm upgrade --install $${{ secrets.RELEASE_NAME }} \
+            --set image.repository=${{ secrets.DOCKER_REGISTRY }}/algova-django-api \
+            --set image.tag=${GITHUB_SHA::7} \
+            --set secrets.DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
+            --set secrets.DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} \
+            --set secrets.CERTIFICATE_ID=${{ secrets.CERTIFICATE_ID }} \
+            --set secrets.DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY }} \
+            --create-namespace --debug --namespace=default ./devops-deemo
           kubectl set image deployment/algova-django-api algova-django-api=${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7} --namespace=default
           kubectl rollout status deployment/algova-django-api --namespace=default
           kubectl wait --for=condition=available --timeout=300s --namespace=default deployment/algova-django-api

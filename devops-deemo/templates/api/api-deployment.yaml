@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  namespace: default
+  namespace: {{ .Release.Namespace }}
   name: algova-django-api
 spec:
   selector:
@@ -14,9 +14,12 @@ spec:
     spec:
       containers:
       - name: algova-django-api
-        image: algova/algova-django-api:latest
+        image: {{ .Values.REGISTRY_HOST }}/algova-django-api:latest
         imagePullPolicy: Always
         command: ['gunicorn', 'demo.wsgi', '--bind=0.0.0.0:8000']
+        envFrom:
+        - secretRef:
+            name: api-secrets
         resources:
           requests:
             memory: "128Mi"

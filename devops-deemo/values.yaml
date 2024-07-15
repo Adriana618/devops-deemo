@@ -1,0 +1,8 @@
+# Default values for devops-deemo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+SECRET_KEY: ""
+DJANGO_ALLOWED_HOSTS: ""
+CERTIFICATE_ID: ""
+DOCKER_REGISTRY: ""
