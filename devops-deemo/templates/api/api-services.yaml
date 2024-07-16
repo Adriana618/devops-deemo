@@ -22,3 +22,9 @@ spec:
   selector:
     app: algova-django-api
   type: LoadBalancer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: algova-django-api-sa
+  namespace: {{ .Release.Namespace }}
