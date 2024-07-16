@@ -1,0 +1,34 @@
+name: Deploy API
+
+on:
+  pull_request:
+    types: [synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build-main-api
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+    
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/test.txt
+
+      - name: Static Code Analysis
+        run: |
+          pylint **/*.py --fail-under=7.0
+
+      - name: Code Coverage
+        run: |
+          pytest --ds=demo.settings --cov=. --cov-fail-under=80
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build, tag, and push image to Docker Hub
+        run: |
+          docker build . --file docker-conf/Dockerfile-django-api --tag ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
+          docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
