@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: algova-django-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: algova-django-api
+  template:
+    metadata:
+      labels:
+        app: algova-django-api
+    spec:
+      serviceAccountName: algova-django-api-sa
+      containers:
+      - name: algova-django-api
+        image: {{ .Values.secrets.DOCKER_REGISTRY }}/algova-django-api:latest
+        imagePullPolicy: Always
+        command: ['gunicorn', 'demo.wsgi', '--bind=0.0.0.0:8000']
+        envFrom:
+        - secretRef:
+            name: api-secrets
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "125m"
