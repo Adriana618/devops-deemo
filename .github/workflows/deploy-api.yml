@@ -43,7 +43,7 @@ jobs:
         run: |
           helm upgrade --install ${{ secrets.RELEASE_NAME }} \
             --set image.repository="${{ secrets.DOCKER_REGISTRY }}/algova-django-api" \
-            --set image.tag=${GITHUB_SHA::7} \
+            --set image.tag="${GITHUB_SHA::7}" \
             --set secrets.DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" \
             --set secrets.DJANGO_ALLOWED_HOSTS="${{ secrets.DJANGO_ALLOWED_HOSTS }}" \
             --set secrets.CERTIFICATE_ID="${{ secrets.CERTIFICATE_ID }}" \

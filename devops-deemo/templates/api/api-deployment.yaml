@@ -4,6 +4,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: algova-django-api
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: algova-django-api
@@ -12,6 +13,7 @@ spec:
       labels:
         app: algova-django-api
     spec:
+      serviceAccountName: algova-django-api-sa
       containers:
       - name: algova-django-api
         image: {{ .Values.secrets.DOCKER_REGISTRY }}/algova-django-api:latest
