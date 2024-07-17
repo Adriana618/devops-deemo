@@ -1,0 +1,15 @@
+[MASTER]
+load-plugins=pylint_django
+
+[TYPECHECK]
+django-settings-module=demo.settings
+
+[MESSAGES CONTROL]
+disable=
+    C0114,  # Missing module docstring
+    C0115,  # Missing class docstring
+    C0116,  # Missing function or method docstring
+    R0903,  # Too few public methods
+    R0904,  # Too many public methods
+    R0201,  # Method could be a function
+    E1101,  # No member
