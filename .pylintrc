@@ -2,7 +2,7 @@
 load-plugins=pylint_django
 
 [TYPECHECK]
-django-settings-module=demo.settings
+django-settings-module=demo.settings.dev
 
 [MESSAGES CONTROL]
 disable=
