@@ -32,7 +32,7 @@ jobs:
         run: |
           docker build . --file docker-conf/Dockerfile-django-api --tag ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
           docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
-          echo "${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}" >> $GITHUB_ENV
+          echo "IMAGE_REF=${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}" >> $GITHUB_ENV
     
       - name: Vulnerability scan
         uses: aquasecurity/trivy-action@0.20.0
