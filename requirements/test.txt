@@ -37,7 +37,14 @@ platformdirs==4.2.2
 pluggy==1.5.0
     # via pytest
 pylint==3.2.5
+    # via
+    #   -r requirements/test.in
+    #   pylint-django
+    #   pylint-plugin-utils
+pylint-django==2.5.5
     # via -r requirements/test.in
+pylint-plugin-utils==0.8.2
+    # via pylint-django
 pytest==8.2.2
     # via
     #   -r requirements/test.in

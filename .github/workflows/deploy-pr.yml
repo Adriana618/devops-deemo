@@ -19,11 +19,11 @@ jobs:
 
       - name: Static Code Analysis
         run: |
-          pylint **/*.py --fail-under=0.0
+          pylint **/*.py --fail-under=7.0
 
       - name: Code Coverage
         run: |
-          pytest --ds=demo.settings --cov=. --cov-fail-under=0
+          pytest --ds=demo.settings --cov=. --cov-fail-under=80
 
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin

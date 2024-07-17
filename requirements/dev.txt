@@ -12,10 +12,14 @@ astroid==3.2.3
     # via
     #   -r requirements/test.txt
     #   pylint
+black==24.4.2
+    # via -r requirements/dev.in
 build==1.2.1
     # via pip-tools
 click==8.1.7
-    # via pip-tools
+    # via
+    #   black
+    #   pip-tools
 coverage[toml]==7.6.0
     # via
     #   -r requirements/test.txt
@@ -50,23 +54,38 @@ mccabe==0.7.0
     # via
     #   -r requirements/test.txt
     #   pylint
+mypy-extensions==1.0.0
+    # via black
 packaging==24.1
     # via
     #   -r requirements/test.txt
+    #   black
     #   build
     #   pytest
+pathspec==0.12.1
+    # via black
 pip-tools==7.4.1
     # via -r requirements/dev.in
 platformdirs==4.2.2
     # via
     #   -r requirements/test.txt
+    #   black
     #   pylint
 pluggy==1.5.0
     # via
     #   -r requirements/test.txt
     #   pytest
 pylint==3.2.5
+    # via
+    #   -r requirements/test.txt
+    #   pylint-django
+    #   pylint-plugin-utils
+pylint-django==2.5.5
     # via -r requirements/test.txt
+pylint-plugin-utils==0.8.2
+    # via
+    #   -r requirements/test.txt
+    #   pylint-django
 pyproject-hooks==1.1.0
     # via
     #   build
@@ -91,6 +110,7 @@ sqlparse==0.5.1
 tomli==2.0.1
     # via
     #   -r requirements/test.txt
+    #   black
     #   build
     #   coverage
     #   pip-tools
@@ -105,6 +125,7 @@ typing-extensions==4.12.2
     #   -r requirements/test.txt
     #   asgiref
     #   astroid
+    #   black
     #   pylint
 wheel==0.43.0
     # via pip-tools
