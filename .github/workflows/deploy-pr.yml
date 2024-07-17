@@ -1,4 +1,4 @@
-name: Deploy API
+name: Test PR
 
 on:
   pull_request:
@@ -32,3 +32,10 @@ jobs:
         run: |
           docker build . --file docker-conf/Dockerfile-django-api --tag ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
           docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
+    
+      - name: Vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
+          format: 'table'
+          exit-code: '1'
