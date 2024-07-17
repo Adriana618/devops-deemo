@@ -36,6 +36,6 @@ jobs:
       - name: Vulnerability scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: algova/algova-django-api:${GITHUB_SHA::7}
+          image-ref: algova/algova-django-api:36f3b99
           format: 'table'
           exit-code: '1'
