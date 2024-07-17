@@ -34,8 +34,8 @@ jobs:
           docker push ${{ secrets.DOCKER_REGISTRY }}/algova-django-api:${GITHUB_SHA::7}
     
       - name: Vulnerability scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: algova/algova-django-api:36f3b99
+          image-ref: algova/algova-django-api:${GITHUB_SHA::7}
           format: 'table'
           exit-code: '1'
