@@ -1,139 +1,86 @@
-# Demo Devops Python
+# Demo DevOps Python Application
 
-This is a simple application to be used in the technical test of DevOps.
+Este repositorio contiene una simple aplicación Django que demuestra varias prácticas de DevOps. La aplicación se despliega en un clúster de Kubernetes utilizando Helm y GitHub Actions para los pipelines de CI/CD.
 
-## Getting Started
+## Table of Contents
+- [Arquitectura](#arquitectura)
+- [Instrucciones de Configuración](#instrucciones-de-configuración)
+- [Pipelines de CI/CD](#pipelines-de-ci-cd)
+- [Despliegue en Kubernetes](#despliegue-en-kubernetes)
+- [Infraestructura como Código](#infraestructura-como-código)
+- [Monitoreo y Logging](#monitoreo-y-logging)
+- [Contribuyendo](#contribuyendo)
+- [Licencia](#licencia)
 
-### Prerequisites
+## Arquitectura
 
-- Python 3.11.3
+La API de Django se despliega en un clúster de Kubernetes con los siguientes componentes:
+- **Deployment**: La API se despliega con 2 réplicas, gestionadas por un Horizontal Pod Autoscaler (HPA) que puede escalar hasta 3 réplicas.
+- **Service Account**: Se utiliza una cuenta de servicio básica para seguir los estándares de seguridad.
+- **LoadBalancer**: Expone la API al mundo, accesible a través del dominio `https://api.algova.dev`.
+- **DNS y SSL**: Gestionados utilizando Route53 y Let's Encrypt. El dominio `api.algova.dev` apunta al LoadBalancer con renovación automática de certificados SSL.
+- **Archivos Estáticos**: Servidos desde un bucket de S3 con configuraciones ACL adecuadas.
 
-### Installation
+![Diagrama de Arquitectura](path/to/architecture-diagram.png)
 
-Clone this repo.
+## Instrucciones de Configuración
 
-```bash
-git clone https://bitbucket.org/devsu/demo-devops-python.git
-```
+1. **Clonar el Repositorio**:
+    ```bash
+    git clone https://github.com/Adriana618/devops-deemo.git
+    cd devops-deemo
+    ```
 
-Install dependencies.
+2. **Instalar Dependencias**:
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y python3 python3-pip docker.io kubectl minikube
+    pip3 install -r requirements.txt
+    ```
 
-```bash
-pip install -r requirements.txt
-```
+3. **Dockerizar la Aplicación**:
+    - Dockerfile ubicado en [`docker-conf/Dockerfile-django-api`](https://github.com/Adriana618/devops-deemo/blob/master/docker-conf/Dockerfile-django-api){:target="_blank"}
 
-Migrate database
+## Pipelines de CI/CD
 
-```bash
-py manage.py makemigrations
-py manage.py migrate
-```
+### Deploy API
+Este GitHub Action despliega los commits mergeados en la rama `master` a un clúster de Kubernetes en DigitalOcean.
 
-### Database
+Ver el archivo [`.github/workflows/deploy.yml`](https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/deploy.yml){:target="_blank"}
 
-The database is generated as a file in the main path when the project is first run, and its name is `db.sqlite3`.
+### Test PR
+Este GitHub Action prueba las pull requests ejecutando análisis de código estático, cobertura de código y análisis de vulnerabilidades.
 
-Consider giving access permissions to the file for proper functioning.
+Ver el archivo [`.github/workflows/test-pr.yml`](https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/test-pr.yml){:target="_blank"}
 
-## Usage
+## Despliegue en Kubernetes
 
-To run tests you can use this command.
+### Configuración del Deployment
+Ver el archivo [`k8s/deployment.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/deployment.yaml){:target="_blank"}
 
-```bash
-py manage.py test
-```
+### Configuración del Service
+Ver el archivo [`k8s/service.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/service.yaml){:target="_blank"}
 
-To run locally the project you can use this command.
+### ConfigMap y Secrets
+Ver los archivos [`k8s/configmap.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/configmap.yaml){:target="_blank") y [`k8s/secret.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/secret.yaml){:target="_blank"}
 
-```bash
-py manage.py runserver
-```
+### Configuración de Ingress
+Ver el archivo [`k8s/ingress.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/ingress.yaml){:target="_blank"}
 
-Open http://localhost:8000/api/ with your browser to see the result.
+## Infraestructura como Código
 
-### Features
+Usando Terraform, la infraestructura se provisiona en AWS:
 
-These services can perform,
+Ver el archivo [`terraform/main.tf`](https://github.com/Adriana618/devops-deemo/blob/master/terraform/main.tf){:target="_blank"}
 
-#### Create User
+## Monitoreo y Logging
 
-To create a user, the endpoint **/api/users/** must be consumed with the following parameters:
+La aplicación se monitorea usando Prometheus y Grafana, con logs centralizados en el stack ELK.
 
-```bash
-  Method: POST
-```
+## Contribuyendo
 
-```json
-{
-    "dni": "dni",
-    "name": "name"
-}
-```
+Por favor, sigue las [directrices de contribución](CONTRIBUTING.md) para proponer mejoras o reportar problemas.
 
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
+## Licencia
 
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the response is unsuccessful, we will receive status 400 and the following message:
-
-```json
-{
-    "detail": "error"
-}
-```
-
-#### Get Users
-
-To get all users, the endpoint **/api/users** must be consumed with the following parameters:
-
-```bash
-  Method: GET
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-[
-    {
-        "id": 1,
-        "dni": "dni",
-        "name": "name"
-    }
-]
-```
-
-#### Get User
-
-To get an user, the endpoint **/api/users/<id>** must be consumed with the following parameters:
-
-```bash
-  Method: GET
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the user id does not exist, we will receive status 404 and the following message:
-
-```json
-{
-    "detail": "Not found."
-}
-```
-
-## License
-
-Copyright © 2023 Devsu. All rights reserved.
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](https://github.com/Adriana618/devops-deemo/blob/master/LICENSE){:target="_blank"} para más detalles.
