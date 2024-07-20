@@ -20,7 +20,7 @@ The Django API is deployed on a DigitalOcean Kubernetes cluster with the followi
 - **DNS and SSL**: Managed using Route53 and Let's Encrypt. The domain [`api.algova.dev`](https://api.algova.dev) points to the LoadBalancer with automatic SSL certificate renewal.
 - **Static Files**: Served from an S3 bucket with proper ACL configurations.
 
-![Architecture Diagram](https://lucid.app/publicSegments/view/216cc460-6c9f-46c7-bf47-b84b90ca15e5/image.png)
+![Architecture Diagram](https://lucid.app/publicSegments/view/5f85d354-b853-494c-b0aa-f24e1dfe826c/image.png)
 
 ## Tools
 The following tools were used to develop this project:
@@ -71,7 +71,7 @@ After having the necessary setup for each stage, proceed to fill in the Helm val
 
 ## CI/CD Pipelines
 
-![CI/CD Diagram](https://lucid.app/publicSegments/view/3f074f38-a519-47aa-adca-604faf1ecc18/image.png)
+![CI/CD Diagram](https://lucid.app/publicSegments/view/1c2e5da3-7498-412c-abdc-838d29c90397/image.png)
 
 ### Deploy API
 This GitHub Action deploys commits merged into the `master` branch to a Kubernetes cluster on DigitalOcean.
