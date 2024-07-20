@@ -1,86 +1,86 @@
 # Demo DevOps Python Application
 
-Este repositorio contiene una simple aplicación Django que demuestra varias prácticas de DevOps. La aplicación se despliega en un clúster de Kubernetes utilizando Helm y GitHub Actions para los pipelines de CI/CD.
+This repository contains a simple Django application that demonstrates various DevOps practices. The application is deployed on a Kubernetes cluster using Helm and GitHub Actions for CI/CD pipelines.
 
 ## Table of Contents
-- [Arquitectura](#arquitectura)
-- [Instrucciones de Configuración](#instrucciones-de-configuración)
-- [Pipelines de CI/CD](#pipelines-de-ci-cd)
-- [Despliegue en Kubernetes](#despliegue-en-kubernetes)
-- [Infraestructura como Código](#infraestructura-como-código)
-- [Monitoreo y Logging](#monitoreo-y-logging)
-- [Contribuyendo](#contribuyendo)
-- [Licencia](#licencia)
+- [Architecture](#architecture)
+- [Setup Instructions](#setup-instructions)
+- [CI/CD Pipelines](#ci-cd-pipelines)
+- [Kubernetes Deployment](#kubernetes-deployment)
+- [Infrastructure as Code](#infrastructure-as-code)
+- [Monitoring and Logging](#monitoring-and-logging)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Arquitectura
+## Architecture
 
-La API de Django se despliega en un clúster de Kubernetes con los siguientes componentes:
-- **Deployment**: La API se despliega con 2 réplicas, gestionadas por un Horizontal Pod Autoscaler (HPA) que puede escalar hasta 3 réplicas.
-- **Service Account**: Se utiliza una cuenta de servicio básica para seguir los estándares de seguridad.
-- **LoadBalancer**: Expone la API al mundo, accesible a través del dominio `https://api.algova.dev`.
-- **DNS y SSL**: Gestionados utilizando Route53 y Let's Encrypt. El dominio `api.algova.dev` apunta al LoadBalancer con renovación automática de certificados SSL.
-- **Archivos Estáticos**: Servidos desde un bucket de S3 con configuraciones ACL adecuadas.
+The Django API is deployed on a Kubernetes cluster with the following components:
+- **Deployment**: The API is deployed with 2 replicas, managed by a Horizontal Pod Autoscaler (HPA) that can scale up to 3 replicas.
+- **Service Account**: A basic service account is used to follow security standards.
+- **LoadBalancer**: Exposes the API to the world, accessible via the domain `https://api.algova.dev`.
+- **DNS and SSL**: Managed using Route53 and Let's Encrypt. The domain `api.algova.dev` points to the LoadBalancer with automatic SSL certificate renewal.
+- **Static Files**: Served from an S3 bucket with proper ACL configurations.
 
-![Diagrama de Arquitectura](path/to/architecture-diagram.png)
+![Architecture Diagram](path/to/architecture-diagram.png)
 
-## Instrucciones de Configuración
+## Setup Instructions
 
-1. **Clonar el Repositorio**:
+1. **Clone the Repository**:
     ```bash
     git clone https://github.com/Adriana618/devops-deemo.git
     cd devops-deemo
     ```
 
-2. **Instalar Dependencias**:
+2. **Install Dependencies**:
     ```bash
     sudo apt-get update
     sudo apt-get install -y python3 python3-pip docker.io kubectl minikube
     pip3 install -r requirements.txt
     ```
 
-3. **Dockerizar la Aplicación**:
-    - Dockerfile ubicado en [`docker-conf/Dockerfile-django-api`](https://github.com/Adriana618/devops-deemo/blob/master/docker-conf/Dockerfile-django-api){:target="_blank"}
+3. **Dockerize the Application**:
+    - Dockerfile located at <a href="https://github.com/Adriana618/devops-deemo/blob/master/docker-conf/Dockerfile-django-api" target="_blank">docker-conf/Dockerfile-django-api</a>
 
-## Pipelines de CI/CD
+## CI/CD Pipelines
 
 ### Deploy API
-Este GitHub Action despliega los commits mergeados en la rama `master` a un clúster de Kubernetes en DigitalOcean.
+This GitHub Action deploys commits merged into the `master` branch to a Kubernetes cluster on DigitalOcean.
 
-Ver el archivo [`.github/workflows/deploy.yml`](https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/deploy.yml){:target="_blank"}
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/deploy.yml" target="_blank">.github/workflows/deploy.yml</a>
 
 ### Test PR
-Este GitHub Action prueba las pull requests ejecutando análisis de código estático, cobertura de código y análisis de vulnerabilidades.
+This GitHub Action tests pull requests by running static code analysis, code coverage, and vulnerability scans.
 
-Ver el archivo [`.github/workflows/test-pr.yml`](https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/test-pr.yml){:target="_blank"}
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/test-pr.yml" target="_blank">.github/workflows/test-pr.yml</a>
 
-## Despliegue en Kubernetes
+## Kubernetes Deployment
 
-### Configuración del Deployment
-Ver el archivo [`k8s/deployment.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/deployment.yaml){:target="_blank"}
+### Deployment Configuration
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/k8s/deployment.yaml" target="_blank">k8s/deployment.yaml</a>
 
-### Configuración del Service
-Ver el archivo [`k8s/service.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/service.yaml){:target="_blank"}
+### Service Configuration
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/k8s/service.yaml" target="_blank">k8s/service.yaml</a>
 
-### ConfigMap y Secrets
-Ver los archivos [`k8s/configmap.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/configmap.yaml){:target="_blank") y [`k8s/secret.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/secret.yaml){:target="_blank"}
+### ConfigMap and Secrets
+See the files <a href="https://github.com/Adriana618/devops-deemo/blob/master/k8s/configmap.yaml" target="_blank">k8s/configmap.yaml</a> and <a href="https://github.com/Adriana618/devops-deemo/blob/master/k8s/secret.yaml" target="_blank">k8s/secret.yaml</a>
 
-### Configuración de Ingress
-Ver el archivo [`k8s/ingress.yaml`](https://github.com/Adriana618/devops-deemo/blob/master/k8s/ingress.yaml){:target="_blank"}
+### Ingress Configuration
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/k8s/ingress.yaml" target="_blank">k8s/ingress.yaml</a>
 
-## Infraestructura como Código
+## Infrastructure as Code
 
-Usando Terraform, la infraestructura se provisiona en AWS:
+Using Terraform, the infrastructure is provisioned on AWS:
 
-Ver el archivo [`terraform/main.tf`](https://github.com/Adriana618/devops-deemo/blob/master/terraform/main.tf){:target="_blank"}
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/terraform/main.tf" target="_blank">terraform/main.tf</a>
 
-## Monitoreo y Logging
+## Monitoring and Logging
 
-La aplicación se monitorea usando Prometheus y Grafana, con logs centralizados en el stack ELK.
+The application is monitored using Prometheus and Grafana, with logs centralized in the ELK stack.
 
-## Contribuyendo
+## Contributing
 
-Por favor, sigue las [directrices de contribución](CONTRIBUTING.md) para proponer mejoras o reportar problemas.
+Please follow the <a href="https://github.com/Adriana618/devops-deemo/blob/master/CONTRIBUTING.md" target="_blank">contribution guidelines</a> to propose improvements or report issues.
 
-## Licencia
+## License
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](https://github.com/Adriana618/devops-deemo/blob/master/LICENSE){:target="_blank"} para más detalles.
+This project is licensed under the MIT License - see the <a href="https://github.com/Adriana618/devops-deemo/blob/master/LICENSE" target="_blank">LICENSE</a> file for details.
