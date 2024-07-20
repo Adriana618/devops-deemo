@@ -1,139 +1,103 @@
-# Demo Devops Python
+# Demo DevOps Python Application
 
-This is a simple application to be used in the technical test of DevOps.
+This repository contains a simple Django application that demonstrates various DevOps practices. The application is deployed on a Kubernetes cluster using Helm and GitHub Actions for CI/CD pipelines.
 
-## Getting Started
+## Table of Contents
+- [Architecture](#architecture)
+- [Tools](#Tools)
+- [Setup Instructions](#setup-instructions)
+- [CI/CD Pipelines](#ci-cd-pipelines)
+- [Kubernetes Deployment](#kubernetes-deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
-### Prerequisites
+## Architecture
 
-- Python 3.11.3
+The Django API is deployed on a DigitalOcean Kubernetes cluster with the following components:
+- **Deployment**: The API is deployed with 2 replicas, managed by a Horizontal Pod Autoscaler (HPA) that can scale up to 3 replicas.
+- **Service Account**: A basic service account is used to follow security standards.
+- **LoadBalancer**: Exposes the API to the world, accessible via the domain [`api.algova.dev`](https://api.algova.dev). It may take about 1 minute.
+- **DNS and SSL**: Managed using Route53 and Let's Encrypt. The domain [`api.algova.dev`](https://api.algova.dev) points to the LoadBalancer with automatic SSL certificate renewal.
+- **Static Files**: Served from an S3 bucket with proper ACL configurations.
 
-### Installation
+![Architecture Diagram](https://lucid.app/publicSegments/view/5f85d354-b853-494c-b0aa-f24e1dfe826c/image.png)
 
-Clone this repo.
+## Tools
+The following tools were used to develop this project:
+- Django: Python library used to power the backend.
+- Helm: Used to manage Kubernetes deployments in an organized and clean manner.
+- Kubernetes: Where our API is deployed, providing scalability and security.
+- Docker: Our API is containerized for easy deployment in any environment.
+- Github Actions: Used to deploy our API and to test our PRs before merging.
+- Pylint: Keeps our code following high standards.
+- Pytest: Ensures proper testing of our API to avoid downtimes.
+- Trivy: Keeps us alert to vulnerabilities in our Docker images.
 
-```bash
-git clone https://bitbucket.org/devsu/demo-devops-python.git
-```
+## Setup Instructions
+The project was divided according to the task to be performed:
+**In all cases, we must clone the repo**
+    ```bash
+    git clone https://github.com/Adriana618/devops-deemo.git
+    cd devops-deemo
+    ```
+# Develop:
+You must have Minikube, Docker, and Helm installed.
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y python3 python3-pip docker.io kubectl minikube
+    pip3 install -r requirements/dev.txt
+    ```
+# Test:
+You must have Minikube, Docker, and Helm installed.
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y python3 python3-pip docker.io kubectl minikube
+    pip3 install -r requirements/test.txt
+    ```
+# Deploy:
+You must have a Kubernetes cluster with 2 nodes with 1CPU and 2GB of memory at a minimum.
 
-Install dependencies.
+After having the necessary setup for each stage, proceed to fill in the Helm values.yaml file or overwrite the variables at the time of installing the app.
+- DJANGO_SECRET_KEY
+- DATABASE_NAME='db.sqlite3'
+- DJANGO_ALLOWED_HOSTS
+- AWS_STORAGE_BUCKET_NAME
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_DEFAULT_REGION
 
-```bash
-pip install -r requirements.txt
-```
+2. **Dockerize the Application**:
+    - Dockerfile located at <a href="https://github.com/Adriana618/devops-deemo/blob/master/docker-conf/Dockerfile-django-api" target="_blank">docker-conf/Dockerfile-django-api</a>
 
-Migrate database
+## CI/CD Pipelines
 
-```bash
-py manage.py makemigrations
-py manage.py migrate
-```
+![CI/CD Diagram](https://lucid.app/publicSegments/view/1c2e5da3-7498-412c-abdc-838d29c90397/image.png)
 
-### Database
+### Deploy API
+This GitHub Action deploys commits merged into the `master` branch to a Kubernetes cluster on DigitalOcean.
 
-The database is generated as a file in the main path when the project is first run, and its name is `db.sqlite3`.
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/deploy-api.yml" target="_blank">.github/workflows/deploy-api.yml</a>
 
-Consider giving access permissions to the file for proper functioning.
+### Test PR
+This GitHub Action tests pull requests by running static code analysis, code coverage, and vulnerability scans.
 
-## Usage
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/.github/workflows/deploy-pr.yml" target="_blank">.github/workflows/deploy-pr.yml</a>
 
-To run tests you can use this command.
+## Kubernetes Deployment
 
-```bash
-py manage.py test
-```
+### Deployment Configuration
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/devops-deemo/templates/api/api-deployment.yaml" target="_blank">devops-deemo/templates/api/api-deployment.yaml</a>
 
-To run locally the project you can use this command.
+### Service Configuration
+See the file <a href="https://github.com/Adriana618/devops-deemo/blob/master/devops-deemo/templates/api/api-services.yaml" target="_blank">devops-deemo/templates/api/api-services.yaml</a>
 
-```bash
-py manage.py runserver
-```
+### Secrets
+See the files <a href="https://github.com/Adriana618/devops-deemo/blob/master/devops-deemo/templates/api/api-secrets.yaml" target="_blank">devops-deemo/templates/api/api-secrets.yaml</a>
 
-Open http://localhost:8000/api/ with your browser to see the result.
+## Contributing
 
-### Features
-
-These services can perform,
-
-#### Create User
-
-To create a user, the endpoint **/api/users/** must be consumed with the following parameters:
-
-```bash
-  Method: POST
-```
-
-```json
-{
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the response is unsuccessful, we will receive status 400 and the following message:
-
-```json
-{
-    "detail": "error"
-}
-```
-
-#### Get Users
-
-To get all users, the endpoint **/api/users** must be consumed with the following parameters:
-
-```bash
-  Method: GET
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-[
-    {
-        "id": 1,
-        "dni": "dni",
-        "name": "name"
-    }
-]
-```
-
-#### Get User
-
-To get an user, the endpoint **/api/users/<id>** must be consumed with the following parameters:
-
-```bash
-  Method: GET
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the user id does not exist, we will receive status 404 and the following message:
-
-```json
-{
-    "detail": "Not found."
-}
-```
+Please follow the <a href="https://github.com/Adriana618/devops-deemo/blob/master/CONTRIBUTING.md" target="_blank">contribution guidelines</a> to propose improvements or report issues.
 
 ## License
 
-Copyright © 2023 Devsu. All rights reserved.
+This project is licensed under the MIT License - see the <a href="https://github.com/Adriana618/devops-deemo/blob/master/LICENSE" target="_blank">LICENSE</a> file for details.
