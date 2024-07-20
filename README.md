@@ -71,7 +71,7 @@ After having the necessary setup for each stage, proceed to fill in the Helm val
 
 ## CI/CD Pipelines
 
-[CI/CD Diagram](https://lucid.app/publicSegments/view/3f074f38-a519-47aa-adca-604faf1ecc18/image.png)
+![CI/CD Diagram](https://lucid.app/publicSegments/view/3f074f38-a519-47aa-adca-604faf1ecc18/image.png)
 
 ### Deploy API
 This GitHub Action deploys commits merged into the `master` branch to a Kubernetes cluster on DigitalOcean.
