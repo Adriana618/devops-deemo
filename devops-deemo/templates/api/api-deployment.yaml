@@ -4,7 +4,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: algova-django-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: algova-django-api
