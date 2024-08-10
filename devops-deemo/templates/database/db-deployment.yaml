@@ -34,7 +34,7 @@ spec:
             memory: "1Gi"
             cpu: "500m"
         volumeMounts:
-        - mountPath: mountPath: /var/lib/postgresql/data/pgdata
+        - mountPath: /var/lib/postgresql/data/pgdata
           name: postgres-storage
       volumes:
       - name: postgres-storage
