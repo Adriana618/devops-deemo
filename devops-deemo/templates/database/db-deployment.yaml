@@ -22,6 +22,8 @@ spec:
           value: {{ .Values.secrets.DB_USER }}
         - name: POSTGRES_PASSWORD
           value: {{ .Values.secrets.DB_PASSWORD }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: {{ .Values.secrets.DB_PORT }}
         resources:
@@ -32,7 +34,7 @@ spec:
             memory: "1Gi"
             cpu: "500m"
         volumeMounts:
-        - mountPath: /var/lib/postgresql/data
+        - mountPath: mountPath: /var/lib/postgresql/data/pgdata
           name: postgres-storage
       volumes:
       - name: postgres-storage
