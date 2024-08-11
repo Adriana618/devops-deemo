@@ -1,6 +1,6 @@
 from demo.settings.base import *  # noqa: F401,F403,F405
 
-DEBUG = False
+DEBUG = True
 
 INSTALLED_APPS += [
     'storages',
