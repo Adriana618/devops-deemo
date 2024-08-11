@@ -36,12 +36,12 @@ class Skill(models.Model):
     level = models.IntegerField()
     years_of_experience = models.FloatField()
     type = models.CharField(
-        max_length=1,
+        max_length=3,
         choices=TYPE_CHOICES,
         default=LANGUAGE,
     )
 
-class ProjectSkill(models.Model):
+class Usage(models.Model):
     percentage = models.FloatField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
