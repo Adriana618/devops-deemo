@@ -18,7 +18,7 @@ spec:
       - name: algova-django-api
         image: {{ .Values.secrets.DOCKER_REGISTRY }}/algova-django-api:latest
         imagePullPolicy: Always
-        command: ['gunicorn', 'demo.wsgi', '--bind=0.0.0.0:8000']
+        command: ['gunicorn', 'demo.wsgi', '--bind=0.0.0.0:8000', '--log-level=debug']
         envFrom:
         - secretRef:
             name: api-secrets
