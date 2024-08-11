@@ -4,4 +4,4 @@ metadata:
   name: api-configmap
   namespace: {{ .Release.Namespace }}
 data:
-  DB_PORT: {{ .Values.configmap.DB_PORT }}
+  DB_PORT: {{ .Values.configmap.DB_PORT | quote }}
