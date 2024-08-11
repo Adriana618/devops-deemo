@@ -23,7 +23,7 @@ spec:
         - name: POSTGRES_PASSWORD
           value: {{ .Values.secrets.DB_PASSWORD }}
         - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
+          value: /var/lib/postgresql/data/pgdata/db
         ports:
         - containerPort: {{ .Values.secrets.DB_PORT }}
         resources:
