@@ -15,4 +15,6 @@ secrets:
   DB_PASSWORD: ""
   DB_NAME: ""
   DB_HOST: ""
+
+configmap:
   DB_PORT: ""

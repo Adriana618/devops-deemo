@@ -7,5 +7,5 @@ spec:
     app: postgres
   ports:
   - protocol: TCP
-    port: {{ .Values.secrets.DB_PORT }}
-    targetPort: {{ .Values.secrets.DB_PORT }}
+    port: {{ .Values.configmap.DB_PORT }}
+    targetPort: {{ .Values.configmap.DB_PORT }}

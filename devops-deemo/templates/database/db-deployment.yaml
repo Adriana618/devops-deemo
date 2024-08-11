@@ -25,7 +25,7 @@ spec:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata/db
         ports:
-        - containerPort: {{ .Values.secrets.DB_PORT }}
+        - containerPort: {{ .Values.configmap.DB_PORT }}
         resources:
           requests:
             memory: "256Mi"
